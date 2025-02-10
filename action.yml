@@ -1,5 +1,5 @@
 name: "Contribution Statistics"
-description: "Calculates and comments on pull requests with monthly lines of code contribution statistics for the given person. Aimed to use for tracking AI agent contributions."
+description: "Comments on pull requests with monthly lines of code stats for a specified user, aimed for tracking AI agent contributions."
 author: "Umut Karakulak"
 branding:
   icon: "pie-chart"
