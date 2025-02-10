@@ -1,4 +1,4 @@
-# Contribution Statistics Action
+# Contribution Statis
 
 This GitHub Action calculates and comments on pull requests with monthly lines of code contribution statistics. When a pull request is made to your `main` branch (or configured branch), this action will:
 
