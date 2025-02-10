@@ -34,17 +34,17 @@ jobs:
           TOTAL_ADDED_LINES=$(echo "$TOTAL_LINES_CHANGED" | awk -F'[:,]' '{print $2}')
           TOTAL_REMOVED_LINES=$(echo "$TOTAL_LINES_CHANGED" | awk -F'[:,]' '{print $4}')
 
-
           # Calculate contributor's lines added and removed for the month
           CONTRIBUTOR_LINES_CHANGED=$(git log --author="${CONTRIBUTOR_NAME}" --since="${MONTH}-01" --until="$(date +%Y-%m-%d -d '+1 month')" --numstat --pretty=format:'' | awk '{ added += $1; removed += $2 } END { print "Added:" added ",Removed:" removed }')
           CONTRIBUTOR_ADDED_LINES=$(echo "$CONTRIBUTOR_LINES_CHANGED" | awk -F'[:,]' '{print $2}')
           CONTRIBUTOR_REMOVED_LINES=$(echo "$CONTRIBUTOR_LINES_CHANGED" | awk -F'[:,]' '{print $4}')
 
-
-          if [[ "$TOTAL_ADDED_LINES" -eq 0 ]]; then
+          if [[ "$TOTAL_ADDED_LINES" -eq 0 && "$TOTAL_REMOVED_LINES" -eq 0 ]]; then
             PERCENTAGE_LINES=0
           else
-            PERCENTAGE_LINES=$(echo "scale=2; ($CONTRIBUTOR_ADDED_LINES * 100) / $TOTAL_ADDED_LINES" | bc)
+            TOTAL_CONTRIBUTOR_LINES=$(($CONTRIBUTOR_ADDED_LINES + $CONTRIBUTOR_REMOVED_LINES))
+            TOTAL_LINES=$(($TOTAL_ADDED_LINES + $TOTAL_REMOVED_LINES))
+            PERCENTAGE_LINES=$(echo "scale=2; ($TOTAL_CONTRIBUTOR_LINES * 100) / $TOTAL_LINES" | bc)
           fi
 
           echo "contributor_name=$CONTRIBUTOR_NAME" >> "$GITHUB_OUTPUT"
@@ -53,7 +53,6 @@ jobs:
           echo "contributor_added_lines=$CONTRIBUTOR_ADDED_LINES" >> "$GITHUB_OUTPUT"
           echo "contributor_removed_lines=$CONTRIBUTOR_REMOVED_LINES" >> "$GITHUB_OUTPUT"
           echo "contribution_percentage_lines=$PERCENTAGE_LINES" >> "$GITHUB_OUTPUT"
-
       - name: Comment on PR
         uses: actions/github-script@v7
         env:
@@ -78,28 +77,21 @@ jobs:
             const contribution_percentage_lines = parseFloat(process.env.CONTRIBUTION_PERCENTAGE_LINES) || 0;
             const month = new Date().toLocaleString('default', { month: 'long', year: 'numeric' });
 
-            const body = `**Contribution Stats for ${contributor_name} in ${month} (Lines of Code):**
+            const body = `**🚀 Contribution Stats for ${contributor_name} in ${month} (Lines of Code) 🚀**
 
             | Metric | Value |
             | ------ | ----- |
-            | Total Lines of Code Added this month | ${total_added_lines} |
-            | Total Lines of Code Removed this month | ${total_removed_lines} |
-            | ${contributor_name} Lines of Code Added this month | ${contributor_added_lines} |
-            | ${contributor_name} Lines of Code Removed this month | ${contributor_removed_lines} |
-            | ${contributor_name} Contribution Percentage (Lines Added) | ${contribution_percentage_lines}% |
+            | 🟢 **Total Lines of Code Added this month** | ${total_added_lines} |
+            | 🔴 **Total Lines of Code Removed this month** | ${total_removed_lines} |
+            | 🟢 **${contributor_name} Lines of Code Added this month** | ${contributor_added_lines} |
+            | 🔴 **${contributor_name} Lines of Code Removed this month** | ${contributor_removed_lines} |
+            | 🎯 **${contributor_name} Contribution Percentage** | ${contribution_percentage_lines}% |
 
-            \`\`\`mermaid
-            pie
-              title Contribution
-              "${contributor_name}" : ${contribution_percentage_lines}
-              "Others" : ${100 - contribution_percentage_lines}
-            \`\`\`
-
-            *These statistics are for the current month of (${month}).*`;
+            📅 *These statistics are for the current month of (${month}).*`;
 
             return github.rest.issues.createComment({
-              issue_number: issue_number,
-              owner: owner,
-              repo: repo,
-              body: body
+                issue_number: issue_number,
+                owner: owner,
+                repo: repo,
+                body: body
             });
