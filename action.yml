@@ -63,7 +63,6 @@ runs:
         CONTRIBUTOR_REMOVED_LINES: ${{ steps.contribution_stats.outputs.contributor_removed_lines }}
         CONTRIBUTION_PERCENTAGE_LINES: ${{ steps.contribution_stats.outputs.contribution_percentage_lines }}
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           const issue_url = context.payload.pull_request.html_url;
           const issue_number = context.payload.pull_request.number;
