@@ -1,4 +1,4 @@
-name: "Contribution Statistics"
+name: "Contribution Stats"
 description: "Comments on pull requests with monthly lines of code stats for a specified user, aimed for tracking AI agent contributions."
 author: "Umut Karakulak"
 branding:
@@ -78,7 +78,7 @@ runs:
           const contribution_percentage_lines = parseFloat(process.env.CONTRIBUTION_PERCENTAGE_LINES) || 0;
           const month = new Date().toLocaleString('default', { month: 'long', year: 'numeric' });
 
-          const body = `**Contribution Statistics for ${contributor_name} in ${month} (Lines of Code):**
+          const body = `**Contribution Stats for ${contributor_name} in ${month} (Lines of Code):**
 
           | Metric | Value |
           | ------ | ----- |

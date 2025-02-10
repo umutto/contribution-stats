@@ -30,7 +30,7 @@ Adds a comment to the pull request that triggered the action, listing the monthl
 To use this action, create a workflow file (e.g., `.github/workflows/contribution-stats.yml`) in your repository and add the following step:
 
 ```yaml
-name: Contribution Statistics
+name: Contribution Stats
 
 on:
   pull_request:
