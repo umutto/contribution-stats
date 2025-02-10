@@ -96,7 +96,7 @@ runs:
 
           *These statistics are for the current month of (${month}).*`;
 
-          return octokit.rest.issues.createComment({
+          return github.rest.issues.createComment({
             issue_number: issue_number,
             owner: owner,
             repo: repo,
