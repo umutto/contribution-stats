@@ -13,6 +13,8 @@ inputs:
 
 runs:
   using: "composite"
+  permissions:
+    pull-requests: write
   steps:
     - name: Checkout code
       uses: actions/checkout@v4
